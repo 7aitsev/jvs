@@ -1,7 +1,5 @@
 import service.JSONValidationService;
 import service.JVSException;
-import service.JVSOptions;
-import service.JVSOptionsBuilder;
 
 public class Main {
 
