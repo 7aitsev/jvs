@@ -9,16 +9,19 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
 public class JSONValidationService {
-    /* should be in [class JVSConfiguration] */
-    public static int SERVER_PORT = 8080;
-    public static String SERVER_HOST = null; // loopback
-    public static int SERVER_BACKLOG = 8;
-    public static String SERVER_PATH = "/";
-    public static int SERVER_DELAY = 10;
-
+    private Configuration mConfig;
     private HttpServer mServer = null;
 
     public JSONValidationService() throws JVSException {
+        init(new JVSOptions());
+    }
+
+    public JSONValidationService(JVSOptions options) throws JVSException {
+        init((null != options) ? options : new JVSOptions());
+    }
+
+    private void init(JVSOptions options) throws JVSException {
+        mConfig = options.getConfiguration();
         InetAddress address = null;
         InetSocketAddress socket = null;
 
@@ -29,38 +32,38 @@ public class JSONValidationService {
         }
 
         try {
-            address = InetAddress.getByName(SERVER_HOST);
+            address = InetAddress.getByName(mConfig.host);
         } catch (UnknownHostException e) {
-            error("Could not determine the IP of a host for <%s>", SERVER_HOST);
+            error("Could not determine the IP of a host for <%s>", mConfig.host);
         } catch (SecurityException e) {
             error("Operation is not allowed");
         }
 
         try {
-            socket = new InetSocketAddress(address, SERVER_PORT);
+            socket = new InetSocketAddress(address, mConfig.port);
         } catch (IllegalArgumentException e) {
-            error("Port is outside of the range of valid port values: %d", SERVER_PORT);
+            error("Port is outside of the range of valid port values: %d", mConfig.port);
         } catch (SecurityException e) {
             error("Operation is not allowed");
         }
 
         try {
-            mServer.bind(socket, SERVER_BACKLOG);
+            mServer.bind(socket, mConfig.backlog);
         } catch (BindException e) {
-            error("Server cannot bind to the requested address: <%s>", SERVER_HOST);
+            error("Server cannot bind to the requested address: <%s>", mConfig.host);
         } catch (IOException e) {
             error("Bind failed");
         }
 
         try {
-            mServer.createContext(SERVER_PATH, new JSONHandler());
+            mServer.createContext(mConfig.path, new JSONHandler());
         } catch (IllegalArgumentException e) {
-            error("Path <%s> is invalid", SERVER_PATH);
+            error("Path <%s> is invalid", mConfig.path);
         }
 
         System.out.format("Server has been created:\nhost:port=<%s:%d>, backlog=%d, path=%s, delay=%d\n",
-                (null == SERVER_HOST) ? "localhost" : SERVER_HOST, SERVER_PORT,
-                SERVER_BACKLOG, SERVER_PATH, SERVER_DELAY);
+                (null == mConfig.host) ? "localhost" : mConfig.host, mConfig.port,
+                mConfig.backlog, mConfig.path, mConfig.delay);
     }
 
     private void error(String msg, Object... args) throws JVSException {
@@ -76,19 +79,13 @@ public class JSONValidationService {
             System.err.println("Server was not initialized");
         }
     }
-/*
+
     public void stop() {
         if(null != mServer) {
-            try {
-                mServer.stop(SERVER_DELAY);
-            } catch (IllegalArgumentException e) {
-                System.err.println("Delay is negative");
-                mServer.stop(0);
-            }
+            mServer.stop(mConfig.delay);
             System.out.println("Server has been stopped");
         } else {
             System.err.println("Server was not initialized");
         }
     }
-*/
 }
