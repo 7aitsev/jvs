@@ -7,8 +7,13 @@ import java.net.BindException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.logging.Logger;
+
+import static java.util.logging.Level.*;
 
 public class JSONValidationService {
+    private static final Logger LOG = Logger.getLogger(JSONValidationService.class.getName());
+
     private Configuration mConfig;
     private HttpServer mServer = null;
 
@@ -61,31 +66,30 @@ public class JSONValidationService {
             error("Path <%s> is invalid", mConfig.path);
         }
 
-        System.out.format("Server has been created:\nhost:port=<%s:%d>, backlog=%d, path=%s, delay=%d\n",
-                (null == mConfig.host) ? "localhost" : mConfig.host, mConfig.port,
-                mConfig.backlog, mConfig.path, mConfig.delay);
+        LOG.log(CONFIG, "Server has been created:\nhost:port=<{0}:{1}>, backlog={2}, path={3}, delay={4}",
+                new Object[] {(null == mConfig.host) ? "localhost" : mConfig.host, mConfig.port,
+                mConfig.backlog, mConfig.path, mConfig.delay});
     }
 
     private void error(String msg, Object... args) throws JVSException {
-        System.err.format(msg + "\n", args);
-        throw new JVSException();
+        throw new JVSException(String.format(msg, args));
     }
 
     public void start() {
         if(null != mServer) {
             mServer.start();
-            System.out.println("Server has been started");
+            LOG.log(INFO, "Server has been started");
         } else {
-            System.err.println("Server was not initialized");
+            LOG.log(WARNING, "Server was not initialized");
         }
     }
 
     public void stop() {
         if(null != mServer) {
             mServer.stop(mConfig.delay);
-            System.out.println("Server has been stopped");
+            LOG.log(INFO, "Server has been stopped");
         } else {
-            System.err.println("Server was not initialized");
+            LOG.log(WARNING, "Server was not initialized");
         }
     }
 }

@@ -6,12 +6,13 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-
 public class JSONHandler implements HttpHandler {
+    private static final Logger LOG = Logger.getLogger(JSONHandler.class.getName());
 
     private static class BadJSONResponse {
         @Expose
@@ -57,6 +58,7 @@ public class JSONHandler implements HttpHandler {
                     errorCode = 8;
                     break;
                 case "Use JsonReader.setLenient(true) to accept malformed JSON":
+                    errorMessage = "Malformed JSON";
                     errorCode = 9;
                     break;
                 case "Unterminated escape sequence":
@@ -70,6 +72,7 @@ public class JSONHandler implements HttpHandler {
                     break;
                 default:
                     errorCode = 0;
+                    LOG.log(Level.WARNING, "Unexpected error message: {0}", errorMessage);
             }
             resource = path;
             requestId = ++mRequestId;
@@ -87,7 +90,7 @@ public class JSONHandler implements HttpHandler {
 
         t.getResponseHeaders().set("Content-type", "application/json");
 
-        t.sendResponseHeaders(HTTP_OK, response.length());
+        t.sendResponseHeaders(java.net.HttpURLConnection.HTTP_OK, response.length());
         OutputStream os = t.getResponseBody();
         os.write(response.getBytes());
         os.close();
@@ -105,8 +108,7 @@ public class JSONHandler implements HttpHandler {
             }
             stream.close();
         } catch (IOException e) {
-            System.err.println("Exception has occurred during reading a request body");
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, "Exception has occurred during reading a request body", e);
         }
         return builder.toString();
     }

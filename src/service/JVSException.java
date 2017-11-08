@@ -1,5 +1,7 @@
 package service;
 
 public class JVSException extends Exception {
-    public JVSException() {super();}
+    JVSException() {super();}
+
+    JVSException(String message) {super(message);}
 }

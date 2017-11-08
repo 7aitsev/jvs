@@ -7,8 +7,11 @@ import com.google.gson.stream.JsonReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class JVSOptions {
+    private static final Logger LOG = Logger.getLogger(JVSOptions.class.getName());
 
     static final String SERVER_HOST = null; // loopback
     static final int SERVER_PORT = 8080;
@@ -16,7 +19,7 @@ public class JVSOptions {
     static final String SERVER_PATH = "/";
     static final int SERVER_DELAY = 10;
 
-    public static final String CONFIG_FILE_PATH = "jvs.conf";
+    public static final String CONFIG_FILE_PATH = "jvs.properties";
 
     private Configuration mConfig;
 
@@ -34,18 +37,15 @@ public class JVSOptions {
 
             mConfig = gson.fromJson(reader, Configuration.class);
         } catch (FileNotFoundException e) {
-            System.err.format("Configuration file not found: cwd=%s\n",
-                    System.getProperty("user.dir"));
-            e.printStackTrace();
+            LOG.log(Level.WARNING, "Configuration file not found: cwd={0}\n", System.getProperty("user.dir"));
             useDefaults();
             return;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.WARNING, "Exception has occurred during reading a setup configuration file {0}", configPath);
             useDefaults();
             return;
         } catch (JsonSyntaxException e) {
-            System.err.println("Configuration: bad json format");
-            e.printStackTrace();
+            LOG.log(Level.WARNING,"Configuration: bad json format\n{0}", e.getMessage());
             useDefaults();
         }
 
