@@ -1,4 +1,4 @@
-FROM arm32v6/openjdk:8u131-jdk-alpine
+FROM openjdk:8u131-jdk-alpine
 
 MAINTAINER Maxim Zaitsev
 
