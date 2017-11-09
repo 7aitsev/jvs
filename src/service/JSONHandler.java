@@ -103,7 +103,7 @@ public class JSONHandler implements HttpHandler {
      * <p>
      * The callback invokes by {@code HttpServer} on incoming request from a client.
      * It reads a payload from a request and performs validation. If validation is complete,
-     * it sends {@code HTTP OK} response with {@code Content-Type: application/vnd.api+json}.
+     * it sends {@code HTTP OK} response with {@code Content-Type: application/json}.
      *
      * @param t  {@code HttpExchange} instance passing by HttpServer.
      * @throws IOException  if sending a response is not possible.
@@ -117,7 +117,7 @@ public class JSONHandler implements HttpHandler {
 
         String response = validateRequest(request, path);
 
-        t.getResponseHeaders().set("Content-type", "application/vnd.api+json");
+        t.getResponseHeaders().set("Content-type", "application/json");
 
         t.sendResponseHeaders(java.net.HttpURLConnection.HTTP_OK, response.length());
         OutputStream os = t.getResponseBody();
