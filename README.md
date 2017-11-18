@@ -22,7 +22,7 @@ try {
 }
 ```
 
-### Customize options
+### Customize Options
 You have several ways to build [`JVSOptions`](src/service/JVSOptions.java) and pass it to a [`JSONValidationService`](src/service/JSONValidationService.java) class constructor.
 ```java
 /* to use default options */
@@ -44,7 +44,7 @@ JVSOptions optinos4 = new JVSOptions("config")
 new JSONValidationService(option4);
 ```
 
-## Configuration file
+## Configuration File
 
 The setup configuration file is in JSON format with the following fields:
  * `host` - a hostname or an IP address for the server to bind
@@ -107,7 +107,7 @@ $ docker run --rm jvs https://example.com/your_repo.git
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
