@@ -96,13 +96,13 @@ Run and build the Docker image:
 ```shell
 $ cd "the path where the Dockerfile is placed"
 $ docker build -t jvs .
-$ docker run --rm jvs
+$ docker run --rm -d -p 80:80 jvs
 ```
 
 Or you can fork this project, change it as you want to, and commit the changes. Then you can simply run:
 
 ```shell
-$ docker run --rm jvs https://example.com/your_repo.git
+$ docker run --rm -d -p 80:80 jvs https://example.com/your_repo.git
 ```
 
 ## License
