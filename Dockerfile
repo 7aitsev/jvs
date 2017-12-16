@@ -9,9 +9,11 @@ RUN apk --update add git && \
 
 WORKDIR /git
 ENV PATH $PATH:/usr/local/bin/
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT ["docker-entrypoint.sh"]
+
+ENTRYPOINT git clone $0 && dir=$(ls) && cd "$dir" && \
+           javac -sourcepath src/ src/Main.java -cp lib/gson-2.8.2.jar -d . && \
+           java -classpath lib/gson-2.8.2.jar:.:service \
+                   -Djava.util.logging.config.file=logging.properties Main
 
 EXPOSE 80
 CMD ["https://github.com/MaksimZaitsev/jvs.git"]
