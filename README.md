@@ -7,7 +7,7 @@ The JSON Validation Service (JVS) is a validator that allows every users to chec
 * [Easy to deploy](#deployment) using provided [`Dockerfile`](Dockerfile)
 * Supports configurable logging based on *Java Logging API* via [`logging.properties`](logging.properties) file
 
-## <a name="usage"></a>Usage
+## Usage
 
 ### A Simple Way
 
@@ -48,10 +48,10 @@ new JSONValidationService(option4);
 
 The setup configuration file is in JSON format with the following fields:
  * `host` - a hostname or an IP address for the server to bind
- * `port` - a port number that is used by the server</li>
- * `backlog` - the maximum number of incoming TCP connections</li>
- * `path` - the location of the service on the given server</li>
- * `delay` - the maximum time in seconds to wait until exchanges have finished</li>
+ * `port` - a port number that is used by the server
+ * `backlog` - the maximum number of incoming TCP connections
+ * `path` - the location of the service on the given server
+ * `delay` - the maximum time in seconds to wait until exchanges have finished
 
 See [jvs.properties](jvs.properties) file for an example.
 
@@ -90,7 +90,7 @@ See [jvs.properties](jvs.properties) file for an example.
 
 Normally, JVS sends `HTTPS OK` responses with `Content-Type: application/json` in either cases.
 
-## <a name="deployment"></a>Deployment
+## Deployment
 
 Run and build the Docker image:
 ```shell
@@ -103,6 +103,16 @@ Or you can fork this project, change it as you want to, and commit the changes. 
 
 ```shell
 $ docker run --rm -d -p 80:80 jvs https://example.com/your_repo.git
+```
+
+To test that JVS is working properly, make a POST request as shown below:
+
+```shell
+$ cat file.json # example of a JSON file
+{
+    "key" : "value"
+}
+$ curl -s --data-binary @file.json http://example.com[:port]/file.json
 ```
 
 ## License
