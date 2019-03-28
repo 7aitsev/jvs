@@ -1,5 +1,6 @@
 # JSON Validation Service
-The JSON Validation Service (JVS) is a validator that allows every users to check JSON objects for compliance with the JSON grammar according to [RFC 7159§9](https://tools.ietf.org/html/rfc7159#section-9).
+
+The JSON Validation Service (JVS) is a validator that allows a user to check JSON objects for compliance with the JSON grammar according to [RFC 7159§](https://tools.ietf.org/html/rfc7159#section-9).
 
 ## Features
 
@@ -23,43 +24,46 @@ try {
 ```
 
 ### Customize Options
-You have several ways to build [`JVSOptions`](src/service/JVSOptions.java) and pass it to a [`JSONValidationService`](src/service/JSONValidationService.java) class constructor.
+
+You have several ways to build [`JVSOptions`](src/service/JVSOptions.java) and pass it to the [`JSONValidationService`](src/service/JSONValidationService.java) class constructor.
+
 ```java
-/* to use default options */
+/* use default options */
 JVSOptions options1 = new JVSOptions();
-/* to populate parameters from the configuration file */
+/* populate parameters from the configuration file */
 JVSOptions options2 = new JVSOptions("config.file");
 /* manually build your JVSOptions instance */
 JVSOptions options3 = new JVSOptionsBuilder("localhost", 8081)
                       .setPath("/app")
                       .build();
 /* or tune parameters from the file at runtime */
-JVSOptions optinos4 = new JVSOptions("config")
+JVSOptions options4 = new JVSOptions("config")
                       .newBuilder()
                       .setPort(8080)
                       .setDelay(32)
                       .build()
 
 /* and use like this */
-new JSONValidationService(option4);
+new JSONValidationService(options4);
 ```
 
 ## Configuration File
 
-The setup configuration file is in JSON format with the following fields:
- * `host` - a hostname or an IP address for the server to bind
- * `port` - a port number that is used by the server
- * `backlog` - the maximum number of incoming TCP connections
- * `path` - the location of the service on the given server
- * `delay` - the maximum time in seconds to wait until exchanges have finished
+The configuration file is in JSON format with the following fields:
+
+ * `host` - a hostname or an IP address for the service to bind
+ * `port` - a port number that is used by the service
+ * `backlog` - a maximum number of incoming TCP connections
+ * `path` - a location of the service on a given host
+ * `delay` - the maximum time in seconds to wait until exchanges are finished
 
 See [jvs.properties](jvs.properties) file for an example.
 
 ## Handling the Responses
 
-1. If received JSON is valid, it is formatted to human-readable form and sent back.
+1. If a received JSON is valid it is formatted to human-readable form and sent back.
 
-2. If data in a request is not conform to the JSON grammar, the following response is sent:
+2. If data in a request do not conform to the JSON grammar, the following response is sent:
 
     ```json
      {
@@ -71,24 +75,24 @@ See [jvs.properties](jvs.properties) file for an example.
      }
      ```
 
-     Below is a list of known errors:
+Below is a list of known errors:
 
-    | Code | Meaning                                                  |
-    |------|----------------------------------------------------------|
-    | 1    | Unterminated array                                       |
-    | 2    | Unterminated object                                      |
-    | 3    | Expected name                                            |
-    | 4    | Expected ':'                                             |
-    | 5    | Unexpected value                                         |
-    | 6    | Expected value                                           |
-    | 7    | Unterminated string                                      |
-    | 8    | Unterminated comment                                     |
-    | 9    | Malformed JSON                                           |
-    | 10   | Unterminated escape sequence                             |
-    | 11   | Invalid escape sequence                                  |
-    | 12   | JSON forbids NaN and infinities                          |
+| Code | Meaning                         |
+|------|---------------------------------|
+| 1    | Unterminated array              |
+| 2    | Unterminated object             |
+| 3    | Expected name                   |
+| 4    | Expected ':'                    |
+| 5    | Unexpected value                |
+| 6    | Expected value                  |
+| 7    | Unterminated string             |
+| 8    | Unterminated comment            |
+| 9    | Malformed JSON                  |
+| 10   | Unterminated escape sequence    |
+| 11   | Invalid escape sequence         |
+| 12   | JSON forbids NaN and infinities |
 
-Normally, JVS sends `HTTPS OK` responses with `Content-Type: application/json` in either cases.
+Normally, JVS sends `HTTPS OK` responses with `Content-Type: application/json` in either case.
 
 ## Deployment
 
